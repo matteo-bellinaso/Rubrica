@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">ListViewExample</string>
+    <string-array name="Fruits">
+
+        <item>Apple</item>
+        <item>Avocado</item>
+        <item>Banana</item>
+        <item>Blueberry</item>
+        <item>Coconut</item>
+        <item>Durian</item>
+        <item>Kiwifruit</item>
+        <item>Jackfruit</item>
+        <item>Mango</item>
+        <item>Olive</item>
+        <item>Pear</item>
+        <item>Sugar-apple</item>
+
+    </string-array>
+</resources>
