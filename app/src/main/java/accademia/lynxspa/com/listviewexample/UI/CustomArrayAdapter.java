@@ -12,6 +12,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 import accademia.lynxspa.com.listviewexample.R;
@@ -21,7 +23,7 @@ import accademia.lynxspa.com.listviewexample.logic.DataAccess;
 import accademia.lynxspa.com.listviewexample.logic.DetailActivity;
 import accademia.lynxspa.com.listviewexample.logic.MainActivity;
 
-public class CustomArrayAdapter extends RecyclerView.Adapter<CustomArrayAdapter.ViewHolder>{
+public class CustomArrayAdapter extends ArrayAdapter<Contatto>{
 
     private Context contesto;
     private LayoutInflater layoutInflatera;
@@ -29,84 +31,49 @@ public class CustomArrayAdapter extends RecyclerView.Adapter<CustomArrayAdapter.
 
     public final static String EXTRA_SELECTED_ITEM = "accademia.lynxspa.com.SELECTED_ITEM";
 
-    public static class ViewHolder extends RecyclerView.ViewHolder  {
-
-        private TextView nomeContact;
-        private ImageView imgContact;
-        private TextView numberContact;
-        private View root;
-        private ImageView star;
-
-        public ViewHolder(View v){
-            super(v);
-            nomeContact = v.findViewById(R.id.nome_contact_main);
-            numberContact = v.findViewById(R.id.telefono_contact_main);
-            imgContact = v.findViewById(R.id.img_utente);
-            root = v;
-            star = v.findViewById(R.id.star);
-
-
-        }
-
-
-        public void setOnItemClickCustom(Context context, final int position){
-
-            context = root.getContext();
-            final Context finalContext = context;
-            root.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(finalContext, DetailActivity.class);
-                    intent.putExtra(EXTRA_SELECTED_ITEM, position);
-                    finalContext.startActivity(intent);
-                }
-            });
-        }
-    }
-
-
 
     public CustomArrayAdapter(Context context) {
-        contesto = context;
-        contactLis = Singleton.getInstance().getItemList();
-       layoutInflatera = LayoutInflater.from(context);
+        super(context, R.layout.item_layout, Singleton.getInstance().getItemList());
+        this.contactLis = Singleton.getInstance().getItemList();
+        this.contesto = context;
+    }
+
+    private ImageView img_utente;
+    private TextView nome_contact_main;
+    private TextView telefono_contact_main;
+    private ImageView image_star;
+
+
+    public View getView(int position, View convertVire, ViewGroup parent){
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View rowView = inflater.inflate(R.layout.item_layout, parent, false);
+
+
+        img_utente = rowView.findViewById(R.id.img_utente);
+        img_utente.setBackgroundColor(DataAccess.getColorForPosition( contesto , position));
+
+        nome_contact_main = rowView.findViewById(R.id.nome_contact_main);
+        nome_contact_main.setText(contactLis.get(position).getNome());
+
+        telefono_contact_main = rowView.findViewById(R.id.telefono_contact_main);
+        telefono_contact_main.setText(contactLis.get(position).getTelefono());
+
+
+
+        image_star = (ImageView) rowView.findViewById(R.id.star);
+        image_star.setImageDrawable();
+
+        return rowView;
+
     }
 
 
 
-
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = layoutInflatera.inflate(R.layout.item_layout, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-
-        return viewHolder;
-    }
-
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        String nome = contactLis.get(position).getNome();
-        String number = contactLis.get(position).getTelefono();
-
-        holder.nomeContact.setText(nome);
-        holder.numberContact.setText(number);
-
-        holder.imgContact.setBackgroundColor(DataAccess.getColorForPosition(contesto,position));
-        String preference = DataAccess.getPref(contesto);
-
-        if(preference != null && preference.equals(number)){
-            holder.star.setVisibility(View.VISIBLE);
-        }else{
-            holder.star.setVisibility(View.INVISIBLE);
-        }
-
-        holder.setOnItemClickCustom(contesto, position);
-    }
 
     @Override
     public int getItemCount() {
         return contactLis.size();
     }
-    
+
 
 }
